@@ -1,0 +1,27 @@
+# ============================================================
+#  requirements.txt  (v3 — Full Platform)
+#  AI Smart Classroom Monitoring System — SIH Project
+#
+#  Install with:
+#      pip install -r requirements.txt
+#
+#  DO NOT upgrade opencv-python, mediapipe, or numpy versions.
+# ============================================================
+
+# ── Core AI / Vision (unchanged from v2) ───────────────────
+opencv-python==4.10.0.84
+mediapipe==0.10.14
+numpy==1.26.4
+
+# ── Web API (new in v3) ─────────────────────────────────────
+
+# FastAPI — lightweight Python web framework
+# Used to serve the dashboard, video stream, and WebSocket
+fastapi==0.111.0
+
+# Uvicorn — ASGI server that runs FastAPI
+# Standard extras include websockets support
+uvicorn[standard]==0.29.0
+
+# Python-multipart — required by FastAPI for form/file handling
+python-multipart==0.0.9

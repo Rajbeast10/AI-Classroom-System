@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Classroom Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       MINIMAL TOP BAR
+  ═══════════════════════════════════════════ -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <span class="brand-glyph">◈</span>
+      <span class="brand-text">CLASSROOM<em>AI</em></span>
+    </div>
+
+    <div class="topbar-center">
+      <div class="status-chip" id="conn-chip">
+        <span class="chip-dot"></span>
+        <span class="chip-label">CONNECTING</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="clock" id="clock">--:--:--</div>
+      <button class="menu-btn" id="menu-btn" aria-label="Open modules">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       DROPDOWN MODULE MENU
+  ═══════════════════════════════════════════ -->
+  <div class="module-menu" id="module-menu">
+    <div class="menu-head">
+      <div class="menu-title">MODULES</div>
+      <div class="menu-sub">Pin one panel to dashboard</div>
+    </div>
+    <div class="menu-list">
+      <button class="menu-item" data-module="heatmap">
+        <span class="mi-icon">▦</span>
+        <span class="mi-text">Classroom Heatmap</span>
+        <span class="mi-badge" id="pin-heatmap"></span>
+      </button>
+      <button class="menu-item" data-module="analytics">
+        <span class="mi-icon">◬</span>
+        <span class="mi-text">Analytics Chart</span>
+        <span class="mi-badge" id="pin-analytics"></span>
+      </button>
+      <button class="menu-item" data-module="attention">
+        <span class="mi-icon">◎</span>
+        <span class="mi-text">Attention Trends</span>
+        <span class="mi-badge" id="pin-attention"></span>
+      </button>
+      <button class="menu-item" data-module="session">
+        <span class="mi-icon">◈</span>
+        <span class="mi-text">Session Stats</span>
+        <span class="mi-badge" id="pin-session"></span>
+      </button>
+      <button class="menu-item" data-module="fps">
+        <span class="mi-icon">◐</span>
+        <span class="mi-text">FPS Monitor</span>
+        <span class="mi-badge" id="pin-fps"></span>
+      </button>
+      <button class="menu-item" data-module="suggestions">
+        <span class="mi-icon">◉</span>
+        <span class="mi-text">AI Suggestions</span>
+        <span class="mi-badge" id="pin-suggestions"></span>
+      </button>
+      <button class="menu-item" data-module="timeline">
+        <span class="mi-icon">◌</span>
+        <span class="mi-text">Activity Timeline</span>
+        <span class="mi-badge" id="pin-timeline"></span>
+      </button>
+      <button class="menu-item" data-module="mood">
+        <span class="mi-icon">◑</span>
+        <span class="mi-text">Classroom Mood</span>
+        <span class="mi-badge" id="pin-mood"></span>
+      </button>
+    </div>
+    <div class="menu-foot">Select to toggle pin</div>
+  </div>
+  <div class="backdrop" id="backdrop"></div>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN LAYOUT
+  ═══════════════════════════════════════════ -->
+  <main class="layout">
+
+    <!-- LEFT CARDS -->
+    <aside class="left-aside">
+
+      <div class="glass-card" id="card-students">
+        <div class="card-label">STUDENTS DETECTED</div>
+        <div class="card-big-num" id="ic-total">0</div>
+        <div class="status-rows">
+          <div class="sr green">
+            <span class="sr-dot"></span>
+            <span class="sr-key">Attentive</span>
+            <span class="sr-val" id="ic-att">0</span>
+          </div>
+          <div class="sr yellow">
+            <span class="sr-dot"></span>
+            <span class="sr-key">Distracted</span>
+            <span class="sr-val" id="ic-dis">0</span>
+          </div>
+          <div class="sr orange">
+            <span class="sr-dot"></span>
+            <span class="sr-key">Looking Away</span>
+            <span class="sr-val" id="ic-look">0</span>
+          </div>
+          <div class="sr red">
+            <span class="sr-dot"></span>
+            <span class="sr-key">Drowsy</span>
+            <span class="sr-val" id="ic-drowsy">0</span>
+          </div>
+          <div class="sr blue">
+            <span class="sr-dot"></span>
+            <span class="sr-key">Inactive</span>
+            <span class="sr-val" id="ic-inactive">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card engagement-card">
+        <div class="card-label">ENGAGEMENT</div>
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 80 80">
+            <circle class="ring-bg"  cx="40" cy="40" r="30"/>
+            <circle class="ring-fg" cx="40" cy="40" r="30"
+                    id="eng-arc" stroke-dasharray="0 188.5"/>
+          </svg>
+          <div class="ring-inner">
+            <span class="ring-pct" id="eng-pct">0%</span>
+          </div>
+        </div>
+        <div class="grade-pill" id="grade-pill">— —</div>
+      </div>
+
+    </aside>
+
+    <!-- CENTER: VIDEO -->
+    <section class="video-section">
+
+      <div class="video-wrap" id="video-wrap">
+        <div class="vc-corner tl"></div>
+        <div class="vc-corner tr"></div>
+        <div class="vc-corner bl"></div>
+        <div class="vc-corner br"></div>
+        <div class="vc-live"><span class="live-dot"></span>LIVE</div>
+        <div class="vc-fps" id="vc-fps">-- FPS</div>
+        <img id="video-stream"
+             src="/video_feed"
+             alt="Live classroom feed"
+             onerror="this.alt='Camera offline — check IP Webcam'"/>
+      </div>
+
+      <!-- PINNED MODULE PANEL -->
+      <div class="pinned-panel" id="pinned-panel">
+        <div class="pp-header">
+          <span class="pp-title" id="pp-title">MODULE</span>
+          <button class="pp-close" id="pp-close" aria-label="Close panel">✕</button>
+        </div>
+        <div class="pp-body" id="pp-body"></div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT: INSIGHTS -->
+    <aside class="right-aside">
+
+      <div class="glass-card insights-card">
+        <div class="card-label">AI INSIGHTS</div>
+        <div class="insights-list" id="insights-list">
+          <div class="insight-row muted">Waiting for data…</div>
+        </div>
+      </div>
+
+      <div class="glass-card meter-card">
+        <div class="card-label">ATTENTION METER</div>
+        <div class="meter-row">
+          <div class="meter-track">
+            <div class="meter-fill" id="meter-fill" style="width:0%"></div>
+          </div>
+          <span class="meter-val" id="meter-val">0%</span>
+        </div>
+        <div class="meter-meta">
+          <span>Peak&nbsp;<strong id="m-peak">--%</strong></span>
+          <span>60s avg&nbsp;<strong id="m-avg">--%</strong></span>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       MODULE TEMPLATES
+  ═══════════════════════════════════════════ -->
+
+  <template id="tpl-heatmap">
+    <div class="mod-heatmap">
+      <div class="hm-legend">
+        <span class="hml green">● Attentive</span>
+        <span class="hml yellow">● Distracted</span>
+        <span class="hml orange">● Away</span>
+        <span class="hml red">● Drowsy</span>
+        <span class="hml blue">● Inactive</span>
+      </div>
+      <div class="hm-wb">WHITEBOARD / SCREEN</div>
+      <div class="hm-grid" id="heatmap-grid"></div>
+      <div class="hm-tc">▲ TEACHER / CAMERA</div>
+    </div>
+  </template>
+
+  <template id="tpl-analytics">
+    <div class="mod-canvas-wrap">
+      <canvas id="attention-chart"></canvas>
+    </div>
+  </template>
+
+  <template id="tpl-attention">
+    <div class="mod-canvas-wrap">
+      <canvas id="trend-chart"></canvas>
+    </div>
+  </template>
+
+  <template id="tpl-session">
+    <div class="mod-session">
+      <div class="sess-row">
+        <div class="sess-cell">
+          <div class="sess-num" id="sess-time">0m 0s</div>
+          <div class="sess-lbl">SESSION TIME</div>
+        </div>
+        <div class="sess-cell">
+          <div class="sess-num cyan" id="sess-peak">--%</div>
+          <div class="sess-lbl">PEAK ENGAGE</div>
+        </div>
+        <div class="sess-cell">
+          <div class="sess-num red" id="sess-low">--%</div>
+          <div class="sess-lbl">LOWEST ENGAGE</div>
+        </div>
+        <div class="sess-cell">
+          <div class="sess-num" id="sess-frames">0</div>
+          <div class="sess-lbl">FRAMES</div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-fps">
+    <div class="mod-fps">
+      <div class="fps-hero" id="fps-big">--</div>
+      <div class="fps-unit">frames / second</div>
+      <div class="mod-canvas-wrap" style="margin-top:12px">
+        <canvas id="fps-spark"></canvas>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-suggestions">
+    <div class="mod-suggestions" id="suggestions-body">
+      <div class="insight-row muted">Loading AI suggestions…</div>
+    </div>
+  </template>
+
+  <template id="tpl-timeline">
+    <div class="mod-canvas-wrap">
+      <canvas id="timeline-chart"></canvas>
+    </div>
+  </template>
+
+  <template id="tpl-mood">
+    <div class="mod-mood">
+      <div class="mood-row">
+        <span class="mood-lbl">Focused</span>
+        <div class="mood-track"><div class="mood-bar green" id="mb-att"></div></div>
+        <span class="mood-pct" id="mb-att-p">0%</span>
+      </div>
+      <div class="mood-row">
+        <span class="mood-lbl">Distracted</span>
+        <div class="mood-track"><div class="mood-bar yellow" id="mb-dis"></div></div>
+        <span class="mood-pct" id="mb-dis-p">0%</span>
+      </div>
+      <div class="mood-row">
+        <span class="mood-lbl">Disengaged</span>
+        <div class="mood-track"><div class="mood-bar orange" id="mb-look"></div></div>
+        <span class="mood-pct" id="mb-look-p">0%</span>
+      </div>
+      <div class="mood-row">
+        <span class="mood-lbl">Drowsy</span>
+        <div class="mood-track"><div class="mood-bar red" id="mb-drowsy"></div></div>
+        <span class="mood-pct" id="mb-drowsy-p">0%</span>
+      </div>
+    </div>
+  </template>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
