@@ -4,7 +4,7 @@ An AI-powered Smart Classroom Monitoring System built for Smart India Hackathon 
 
 This project uses:
 
-* 📱 Old Android phone as wireless classroom camera
+* 📱 Android phone as wireless classroom camera
 * 🧠 Artificial Intelligence for classroom analysis
 * 🎥 OpenCV + MediaPipe for real-time computer vision
 * 🌐 Futuristic frontend dashboard for teachers
